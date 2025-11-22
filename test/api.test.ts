@@ -171,17 +171,12 @@ describe('ApiHandler', () => {
 
     it('should handle hardware errors when starting a machine', () => {
         const errorMachine = { ...machine, status: MachineStatus.ERROR };
-        console.log(machine);
-        console.log(errorMachine);
         mockMachineStateTable.getMachine.mockReturnValueOnce(machine).mockReturnValueOnce(errorMachine);
-        console.log(machine);
-        console.log(errorMachine);
         mockSmartMachineClient.startCycle.mockImplementation(() => {
             throw new Error('Hardware fault');
         });
 
         const response = apiHandler.handle({ method: HttpMethod.POST, path: `/machine/${machineId}/start`, token: VALID_TOKEN });
-        console.log(response);
 
         expect(response.statusCode).toBe(HttpResponseCode.HARDWARE_ERROR);
         expect(response.machine).toEqual(errorMachine);
