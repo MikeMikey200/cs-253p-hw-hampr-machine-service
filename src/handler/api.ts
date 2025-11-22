@@ -24,11 +24,17 @@ export class ApiHandler {
         const identityPC = IdentityProviderClient.getInstance();
 
         if (token.length === 0 || !token) {
-            throw "{\"statusCode\":" + HttpResponseCode.NOT_FOUND + ",\"message\":\"Token not found\"}";
+            throw JSON.stringify({
+                statusCode: HttpResponseCode.NOT_FOUND,
+                message: 'Token not found',
+            });
         }
 
         if (!identityPC.validateToken(token)) {
-            throw "{\"statusCode\":" + HttpResponseCode.UNAUTHORIZED + ",\"message\":\"Invalid token\"}";
+            throw JSON.stringify({
+                statusCode: HttpResponseCode.UNAUTHORIZED,
+                message: 'Invalid token',
+            });
         }
     }
 
@@ -49,7 +55,7 @@ export class ApiHandler {
         // find the first available machine
         for (const machine of machineArr) {
             if (machine.status === MachineStatus.AVAILABLE) {
-                machineAvailable = machine;
+                machineAvailable = { ...machine };
                 break;
             }
         }
